@@ -193,7 +193,7 @@ public enum Team {
 public enum FactionType {
     King,
     Troop,
-    Double,
+    Wall,
     Hole,
-    Wall
+    Double,
 }

@@ -126,7 +126,12 @@ public class NetworkedTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback 
     #region MonoBehaviour CallBack
 
 
-    void Start() { }
+    void Start() {
+        if (!PhotonNetwork.IsConnected)
+            PhotonNetwork.OfflineMode = true;
+        else
+            PhotonNetwork.OfflineMode = false;
+    }
 
     void Update() {
         if (Turn > 0 && this.IsOver && !_isOverCallProcessed) {

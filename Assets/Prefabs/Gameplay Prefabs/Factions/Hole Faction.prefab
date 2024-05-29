@@ -47,11 +47,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b259cb5d84382c4bb9638215397d9bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factionType: 3
   _parentTile: {fileID: 0}
   pushCount: 1
   _team: 0
   outline: {fileID: 2461282624148470731}
   model: {fileID: 6467932432763909399}
+  factionID: 0
 --- !u!114 &2461282624148470731
 MonoBehaviour:
   m_ObjectHideFlags: 0

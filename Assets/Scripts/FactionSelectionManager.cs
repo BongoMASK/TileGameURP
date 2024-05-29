@@ -54,7 +54,7 @@ public class FactionSelectionManger : MonoBehaviour
         PlayerMove playerMove = new PlayerMove(selectedFaction.factionID, border);
         turnManager.SendMove(playerMove.ToByteArray(), true, PhotonNetwork.LocalPlayer);
 
-        selectedFaction.InitiatePush(border);
+        //selectedFaction.InitiatePush(border);
         selectedFaction = null;
     }
 

@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class PlacementManager : MonoBehaviour
 
     private void Awake() {
         instance = this;
+    }
+
+    private void Start() {
+        networkedTurnManager.BeginTurn();
     }
 
     private void Update() {
@@ -73,7 +78,6 @@ public class PlacementManager : MonoBehaviour
             return;
 
         int id = Faction.id + 1;
-        Faction.id = id;
 
         PlayerPieceCreate playerPieceCreate = new PlayerPieceCreate(id, tile.tileID, selectedFactionType.factionType);
         networkedTurnManager.SendNewPieceToAll(playerPieceCreate.ToByteArray(), PhotonNetwork.LocalPlayer);
@@ -85,12 +89,15 @@ public class PlacementManager : MonoBehaviour
     }
 
     public void PlaceFactionOnBoard(PlayerPieceCreate playerPieceCreate) {
-
         int index = (int)playerPieceCreate.factionType;
-        Faction faction = Instantiate(availableFactionPrefabs[index]);
-        //Tile t = (int)playerPieceCreate.tileID;
 
-        //faction.MoveFaction(playerPieceCreate);
+        Faction faction = Instantiate(availableFactionPrefabs[index]);
+        SquareTile t = SquareTile.FindTile(playerPieceCreate.tileID);
+
+        faction.factionID = playerPieceCreate.factionID;
+        Faction.id = faction.factionID;
+
+        faction.MoveFaction(t);
         faction.GetComponent<Collider>().enabled = true;
     }
 }
