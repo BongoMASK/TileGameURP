@@ -12,6 +12,10 @@ public class GameController : MonoBehaviour, INetworkedTurnManagerCallbacks
 
     public void OnPieceCreated(Player owner, int turn, object[] pieceData) {
         Debug.Log("Piece created");
+
+        PlayerPieceCreate p = PlayerPieceCreate.ToPlayerPieceCreate(pieceData);
+
+        PlacementManager.instance.PlaceFactionOnBoard(p);
     }
 
     public void OnPlayerFinished(Player player, int turn, object[] move) {

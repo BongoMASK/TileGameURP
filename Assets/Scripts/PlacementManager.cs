@@ -1,9 +1,9 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
-    
     public static PlacementManager instance;
 
     [SerializeField] Deck deck;
@@ -72,10 +72,25 @@ public class PlacementManager : MonoBehaviour
         if (!tile.isEmpty)
             return;
 
-        //networkedTurnManager.SendNewPieceToAll();
+        int id = Faction.id + 1;
+        Faction.id = id;
 
-        selectedFactionType.MoveFaction(tile);
-        selectedFactionType.GetComponent<Collider>().enabled = true;
-        selectedFactionType = null;
+        PlayerPieceCreate playerPieceCreate = new PlayerPieceCreate(id, tile.tileID, selectedFactionType.factionType);
+        networkedTurnManager.SendNewPieceToAll(playerPieceCreate.ToByteArray(), PhotonNetwork.LocalPlayer);
+        Destroy(selectedFactionType.gameObject);
+
+        //selectedFactionType.MoveFaction(tile);
+        //selectedFactionType.GetComponent<Collider>().enabled = true;
+        //selectedFactionType = null;
+    }
+
+    public void PlaceFactionOnBoard(PlayerPieceCreate playerPieceCreate) {
+
+        int index = (int)playerPieceCreate.factionType;
+        Faction faction = Instantiate(availableFactionPrefabs[index]);
+        //Tile t = (int)playerPieceCreate.tileID;
+
+        //faction.MoveFaction(playerPieceCreate);
+        faction.GetComponent<Collider>().enabled = true;
     }
 }

@@ -5,6 +5,7 @@ public class Faction : MonoBehaviour
 {
 
     [Header("Data")]
+    public FactionType factionType;
 
     [SerializeField] SquareTile _parentTile;
     public SquareTile parentTile {

@@ -3736,6 +3736,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deck: {fileID: 731434862}
+  networkedTurnManager: {fileID: 0}
   availableFactionPrefabs:
   - {fileID: 4298953726791431769, guid: 6f9b091ac62dcb841841b72abbf7502f, type: 3}
   - {fileID: 6735814053996296207, guid: ecdb1383bab09644e880ed11f7ee026d, type: 3}
