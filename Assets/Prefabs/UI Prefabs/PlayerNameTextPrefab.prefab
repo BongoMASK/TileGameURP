@@ -470,7 +470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5e086723a58ea4fbb4fd68fbac1d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerListIndex: 0
   prefabParent: {fileID: 5893615264228808052}
   playerNameText: {fileID: 7190499280150853400}
   timeText: {fileID: 8921178586733893686}
@@ -480,7 +479,11 @@ MonoBehaviour:
   - serializedVersion: 2
     rgba: 4291337983
   - serializedVersion: 2
-    rgba: 4294293504
+    rgba: 4294827911
+  - serializedVersion: 2
+    rgba: 4288937866
+  - serializedVersion: 2
+    rgba: 4287293695
 --- !u!1 &7844808264052931856
 GameObject:
   m_ObjectHideFlags: 0
