@@ -1,13 +1,21 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Properties;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerListItem : MonoBehaviourPunCallbacks {
+    
+    int playerListIndex = 0;
     Player player;
+
+
+    [Header("Assignables")]
+
+    [SerializeField] GameObject prefabParent;
 
     [SerializeField] TMP_Text playerNameText;
     [SerializeField] TMP_Text timeText;
@@ -15,7 +23,9 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
     [SerializeField] Image backgroundImage;
     [SerializeField] Slider slider;
 
-    float turnDuration;
+    float turnDuration = 20;
+
+    [SerializeField] Color32[] colors;
 
     public float ElapsedTimeInTurn {
         get { return ((float)(PhotonNetwork.ServerTimestamp - PhotonNetwork.CurrentRoom.GetTurnStartTime())) / 1000.0f; }
@@ -23,6 +33,32 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
 
     public float RemainingSecondsInTurn {
         get { return Mathf.Max(0f, this.turnDuration - this.ElapsedTimeInTurn); }
+    }
+
+
+    private void Start() {
+        playerListIndex = transform.GetSiblingIndex();
+        SetUpPlayerListItem();
+    }
+
+    public void SetUpPlayerListItem() {
+        try {
+            player = PhotonNetwork.PlayerList[playerListIndex];
+        }
+        catch(IndexOutOfRangeException e) {
+            Debug.Log(e.Message + " Switcing off PlayerListItem no. " + playerListIndex);
+            prefabParent.SetActive(false);
+            return;
+        }
+
+        prefabParent.SetActive(true);
+        
+        playerNameText.text = player.NickName;
+        backgroundImage.color = colors[playerListIndex];
+
+        slider.maxValue = turnDuration;
+        timeText.text = "";
+        slider.value = 0;
     }
 
     public void SetUpPlayerListItem(Player p, Color32 color, float turnDuration) {
@@ -53,7 +89,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
         slider.value = 0;
     }
 
-    #region PUN CallBack Functions
+    #region PUN CallBack Functions 
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) {
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
@@ -68,15 +104,20 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) {
         base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
 
-        if (changedProps.ContainsKey(PlayerProps.MaxManaPropKey) || changedProps.ContainsKey(PlayerProps.ManaPropKey)) {
-            if (targetPlayer != this.player)
-                return;
+        if (targetPlayer == player)
+            SetUpPlayerListItem();
+    }
 
-            int mana = (int)this.player.CustomProperties[PlayerProps.ManaPropKey];
-            int maxMana = (int)this.player.CustomProperties[PlayerProps.MaxManaPropKey];
+    public override void OnPlayerEnteredRoom(Player newPlayer) {
+        base.OnPlayerEnteredRoom(newPlayer);
 
-            playerNameText.text = player.NickName + " (" + mana + "/" + maxMana + ")";
-        }
+        SetUpPlayerListItem();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer) {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        SetUpPlayerListItem();
     }
 
     #endregion

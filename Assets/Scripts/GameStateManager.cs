@@ -1,28 +1,35 @@
+using Photon.Pun;
+using Photon.Realtime;
+using Properties;
 using UnityEngine;
 
-public class GameStateManager : MonoBehaviour
+public class GameStateManager : MonoBehaviourPunCallbacks
 {
     public static GameStateManager instance;
 
     public delegate void GameStateChange();
 
-    [SerializeField] private GameState _gameState;
+    GameState prevGameState;
+    public GameState currentGameState {
+        get => PhotonNetwork.CurrentRoom.GetGameState();
+        private set {
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.CurrentRoom.SetGameState(value);
+        }
+    }
+
 
     private void Awake() {
         instance = this;
     }
 
-    public GameState gameState {
-        get { return _gameState; }
-        set {
-            if (value == _gameState)
-                return;
-
-            EndGameStage(_gameState);
-            _gameState = value;
-            BeginGameState(_gameState);
-        }
+    private void Start() {
+        currentGameState = GameState.Placing;
     }
+
+
+    #region Stage Functions
+
 
     void EndGameStage(GameState gameState) {
         string funcName = gameState.ToString() + "StageEnded";
@@ -32,7 +39,10 @@ public class GameStateManager : MonoBehaviour
     void BeginGameState(GameState gameState) {
         string funcName = gameState.ToString() + "StageBegins";
         Invoke(funcName, 0);
+
+        Debug.Log(gameState.ToString() + " Begins");
     }
+
 
 
     #region Placing Stage
@@ -78,6 +88,45 @@ public class GameStateManager : MonoBehaviour
 
     public void GameOverStageEnded() {
         GameOverEnded?.Invoke();
+    }
+
+    #endregion
+
+    #endregion
+
+    public void CheckIfDecksEmpty(int turn) {
+        if (currentGameState != GameState.Placing)
+            return;
+
+        bool allPlayerDecksEmpty = true;
+        foreach (var item in PhotonNetwork.PlayerList) {
+            if(!item.IsDeckEmpty())
+                allPlayerDecksEmpty = false;
+        }
+
+        if (allPlayerDecksEmpty)
+            currentGameState = GameState.Pushing;
+    }
+
+
+    #region Monobehaviour PUN Callbacks
+
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) {
+        base.OnRoomPropertiesUpdate(propertiesThatChanged);
+
+        if (propertiesThatChanged.ContainsKey(RoomProps.CurrentGameState)) {
+            EndGameStage(prevGameState);
+            BeginGameState(currentGameState);
+            prevGameState = currentGameState;
+        }
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) {
+        base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+
+        if(changedProps.ContainsKey(PlayerProps.EmptyDeck)) {
+            CheckIfDecksEmpty(1);
+        }
     }
 
     #endregion

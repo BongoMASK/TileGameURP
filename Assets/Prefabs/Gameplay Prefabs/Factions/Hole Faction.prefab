@@ -50,9 +50,15 @@ MonoBehaviour:
   factionType: 3
   _parentTile: {fileID: 0}
   pushCount: 1
-  _team: 0
   outline: {fileID: 2461282624148470731}
   model: {fileID: 6467932432763909399}
+  renderers: []
+  materials: []
+  outlineColors:
+  - serializedVersion: 2
+    rgba: 4285475045
+  - serializedVersion: 2
+    rgba: 4290874904
   factionID: 0
 --- !u!114 &2461282624148470731
 MonoBehaviour:

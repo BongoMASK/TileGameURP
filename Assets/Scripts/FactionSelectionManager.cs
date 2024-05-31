@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class FactionSelectionManger : MonoBehaviour
@@ -13,6 +14,9 @@ public class FactionSelectionManger : MonoBehaviour
         get => _selectedFaction;
         set {
             if (!isPushingStage)
+                return;
+
+            if(!isPlayersTurn) 
                 return;
 
             // Deselect Faction
@@ -31,14 +35,25 @@ public class FactionSelectionManger : MonoBehaviour
 
                 _selectedFaction = value;
 
+
                 // Add outline
-                if (_selectedFaction != null)
+                if (_selectedFaction != null) {
+                    // Check if the player owns this piece
+                    if (value.owner != owner)
+                        return;
+
                     _selectedFaction.HighlightFaction(true);
+                }
             }
         }
     }
 
-    bool isPushingStage => GameStateManager.instance.gameState == GameState.Pushing;
+    bool isPushingStage => GameStateManager.instance.currentGameState == GameState.Pushing;
+
+    Player owner => PhotonNetwork.LocalPlayer;
+
+    bool isPlayersTurn => PhotonNetwork.CurrentRoom.GetActivePlayer() == owner;
+
 
 
     private void Awake() {
@@ -59,7 +74,7 @@ public class FactionSelectionManger : MonoBehaviour
     }
 
     public void PerformMove(PlayerMove playerMove) {
-        Faction faction = Faction.FindFaction(selectedFaction.factionID);
+        Faction faction = Faction.FindFaction(playerMove.factionID);
         playerMove.Print();
 
         faction.InitiatePush(playerMove.direction);

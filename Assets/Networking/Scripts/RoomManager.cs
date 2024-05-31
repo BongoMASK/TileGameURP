@@ -6,9 +6,14 @@ using UnityEngine;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text messageText;
+    [SerializeField] TMP_Text playerListText;
     [SerializeField] TMP_InputField inputFieldText;
 
+    [SerializeField] Color32[] teamColors;
+
     private void Start() {
+        Screen.SetResolution(1280, 720, false);
+
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
@@ -16,8 +21,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if(Input.GetKeyDown(KeyCode.Space))
             StartGame();
     }
-
-    #region Networking
 
     public void ConnectToMaster() {
         messageText.text = "Connecting...";
@@ -45,11 +48,47 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         messageText.text = PhotonNetwork.MasterClient.NickName + "'s Lobby\nWaiting For Players...";
 
+        UpdatePlayerList();
         //GameObject player = PhotonNetwork.Instantiate(playerPath, Vector3.zero, Quaternion.identity);
     }
 
+    
+
+    public void StartGame() {
+        PhotonNetwork.LoadLevel(1);
+        Debug.Log("Game Started");
+    }
+
+    public void UpdatePlayerList() {
+        string playerList = "<size=100%>Player List<size=80%>\n\n";
+
+        int i = 0;
+        foreach (Player item in PhotonNetwork.PlayerList) {
+            string col = "<color=#" + ColorUtility.ToHtmlStringRGBA(teamColors[i]) + ">";
+
+            playerList += col + item.NickName;
+            playerList += "\n";
+
+            SetPlayerCustomProps(item, i);
+
+            i++;
+        }
+
+        playerListText.text = playerList;
+    }
+
+    private void SetPlayerCustomProps(Player player, int i) {
+        player.SetTeam(i);
+        player.SetIsEmptyDeck(false);
+    }
+
+
+    #region Monobehaviour Pun Callbacks
+
     public override void OnPlayerEnteredRoom(Player newPlayer) {
         base.OnPlayerEnteredRoom(newPlayer);
+
+        UpdatePlayerList();
 
         if (!PhotonNetwork.IsMasterClient)
             return;
@@ -60,9 +99,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void StartGame() {
-        PhotonNetwork.LoadLevel(1);
-        Debug.Log("Game Started");
+    public override void OnPlayerLeftRoom(Player otherPlayer) {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        UpdatePlayerList();
     }
 
     #endregion

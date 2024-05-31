@@ -9,6 +9,8 @@ using ExitGames.Client.Photon;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Properties;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// Pun turnBased Game manager.
@@ -219,8 +221,6 @@ public class NetworkedTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback 
             activePlayerTurn = result;
         else
             Debug.LogError("Could not set player turn");
-
-        //Debug.Log(activePlayerTurn.NickName + "'s Turn");
     }
 
     public bool IsPlayersTurn(Player player) {
@@ -279,8 +279,20 @@ public class NetworkedTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback 
                     int turn = (int)evTable["turn"];
                     object[] pieceData = (object[])evTable["pieceData"];
 
-                    this.TurnManagerListener.OnPieceCreated(sender, turn, pieceData);
+                    if (turn == this.Turn) {
+                        if (!this.playerOrder.TryDequeue(out Player result))
+                            Debug.LogError("Dequeue in player list failed.");
 
+                        this.TurnManagerListener.OnPieceCreated(sender, turn, pieceData);
+                    }
+
+                    if (IsCompletedByAll) {
+                        this.TurnManagerListener.OnTurnCompleted(this.Turn);
+                        BeginTurn();
+                    }
+                    else {
+                        SetActivePlayer();
+                    }
                     break;
                 }
         }
@@ -301,8 +313,6 @@ public class NetworkedTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) {
 
         if (propertiesThatChanged.ContainsKey("Turn")) {
-            Debug.Log("Turn: " + Turn);
-
             _isOverCallProcessed = false;
 
             SetPlayerOrder();
@@ -478,6 +488,86 @@ public static class TurnExtensions {
         }
         
         return (Player)room.CustomProperties[ActivePlayerPropKey];
+    }
+
+    public static GameState GetGameState(this RoomInfo room) {
+        if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(TurnPropKey)) {
+            return 0;
+        }
+
+        int i = (int)room.CustomProperties[RoomProps.CurrentGameState];
+        return (GameState)i;
+    }
+
+    public static void SetGameState(this Room room, GameState gameState) {
+        if (room == null || room.CustomProperties == null) {
+            return;
+        }
+
+        Hashtable turnProps = new Hashtable();
+        turnProps[RoomProps.CurrentGameState] = (int)gameState;
+
+        room.SetCustomProperties(turnProps);
+    }
+
+    public static int GetTeam(this Player player) {
+        Room room = PhotonNetwork.CurrentRoom;
+        if (room == null || room.CustomProperties == null) {
+            return -1;
+        }
+
+        if (player == null || player.CustomProperties == null) {
+            return -1;
+        }
+
+        return (int)player.CustomProperties[PlayerProps.Team];
+    }
+
+    public static void SetTeam(this Player player, int team) {
+        Room room = PhotonNetwork.CurrentRoom;
+        if (room == null || room.CustomProperties == null) {
+            return;
+        }
+
+        if (player == null || player.CustomProperties == null) {
+            return;
+        }
+
+        Hashtable playerProps = new Hashtable();
+        playerProps[PlayerProps.Team] = team;
+
+        player.SetCustomProperties(playerProps);
+    }
+
+    public static bool IsDeckEmpty(this Player player) {
+        Room room = PhotonNetwork.CurrentRoom;
+        if (room == null || room.CustomProperties == null) {
+            return true;
+        }
+
+        if (player == null || player.CustomProperties == null) {
+            return true;
+        }
+
+        return (bool)player.CustomProperties[PlayerProps.EmptyDeck];
+    }
+
+    public static void SetIsEmptyDeck(this Player player, bool value) {
+        Room room = PhotonNetwork.CurrentRoom;
+        if (room == null || room.CustomProperties == null) {
+            return;
+        }
+
+        if (player == null || player.CustomProperties == null) {
+            return;
+        }
+
+        Hashtable playerProps = new Hashtable();
+        playerProps[PlayerProps.EmptyDeck] = value;
+
+        player.SetCustomProperties(playerProps);
+
+        Debug.Log("Set deck to " + value);
     }
 
 }

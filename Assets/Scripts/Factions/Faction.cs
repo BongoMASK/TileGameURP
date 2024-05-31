@@ -1,41 +1,66 @@
 using DG.Tweening;
+using Photon.Realtime;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Faction : MonoBehaviour
 {
-
     [Header("Data")]
     public FactionType factionType;
 
     [SerializeField] SquareTile _parentTile;
+    
+    Player _owner;
+
+
+    /// <summary>
+    /// Number of times it will push the tiles
+    /// </summary>
+    [SerializeField] int pushCount = 1;
+
+    /// <summary>
+    /// offset from the tile to maintain
+    /// </summary>
+    public Vector3 offset { get; private set; } = new Vector3(0, 0f, 0);
+
+    /// <summary>
+    /// The team of the faction
+    /// </summary>
+    public Team team => (Team)owner.GetTeam();
+
+    /// <summary>
+    /// owner of the faction
+    /// </summary>
+    public Player owner {
+        get { return _owner; }
+        set {
+            _owner = value;
+            ChangeTeamMaterial();
+        }
+    }
+
+    /// <summary>
+    /// Where the faction is on the board
+    /// </summary>
     public SquareTile parentTile {
         get { return _parentTile; }
-        private set { 
+        private set {
             _parentTile = value;
 
             if (_parentTile != null)
                 DoPushAnim();
         }
     }
+    
 
-    [SerializeField] int pushCount = 1;
-
-    [SerializeField] private Team _team;
-    public Team team {
-        get { return _team; }
-        set {
-            _team = value;
-            ChangeTeamMaterial();
-        }
-    }
-
-    public Vector3 offset { get; private set; } = new Vector3(0, 0f, 0);
 
     [Header("Assignables")]
 
     [SerializeField] private Outline outline;
     [SerializeField] protected Transform model;
-
+    [SerializeField] MeshRenderer[] renderers;
+    [SerializeField] Material[] materials;
+    [SerializeField] Color32[] outlineColors;
 
     public static int id = 0;
     public int factionID;
@@ -156,13 +181,13 @@ public class Faction : MonoBehaviour
     }
 
     private void ChangeTeamMaterial() {
-        switch (team) {
-            case Team.Red:
-                break;
+        int index = (int)team;
 
-            case Team.Blue:
-                break;
+        foreach (MeshRenderer item in renderers) {
+            item.material = materials[index];
         }
+
+        outline.OutlineColor = outlineColors[index];
     }
 
     #endregion
@@ -195,5 +220,5 @@ public enum FactionType {
     Troop,
     Wall,
     Hole,
-    Double,
+    Double, 
 }

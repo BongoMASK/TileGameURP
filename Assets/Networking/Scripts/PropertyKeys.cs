@@ -19,37 +19,22 @@ namespace Properties {
         /// get which players turn it is
         /// </summary>
         public static readonly string ActivePlayerPropKey = "ActivePlayer";
+
+        /// <summary>
+        /// Stores the game state of the room
+        /// </summary>
+        public static readonly string CurrentGameState = nameof(CurrentGameState);
     }
 
     public static class PlayerProps {
         /// <summary>
-        /// Mana Count of player
+        /// Team number of the player
         /// </summary>
-        public static readonly string ManaPropKey = "Mana";
+        public static readonly string Team = nameof(Team);
 
         /// <summary>
-        /// Max Mana of player
+        /// returns a bool on whether deck is empty
         /// </summary>
-        public static readonly string MaxManaPropKey = "MaxMana";
-
-        /// <summary>
-        /// If player has played a move
-        /// </summary>
-        public static readonly string hasMovedPropKey = "HasMoved";
-
-        /// <summary>
-        /// If player has attacked yet
-        /// </summary>
-        public static readonly string hasAttackedPropKey = "HasAttacked";
-
-        /// <summary>
-        /// If player has attacked yet
-        /// </summary>
-        public static readonly string hasPutInManaZonePropKey = "HasPutInManaZone";
-
-        /// <summary>
-        /// If player has attacked yet
-        /// </summary>
-        public static readonly string hasPlacedCardPropKey = "HasPlacedCard";
+        public static readonly string EmptyDeck = nameof(EmptyDeck);
     }
 }
