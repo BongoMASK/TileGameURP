@@ -477,9 +477,9 @@ MonoBehaviour:
   slider: {fileID: 3160405360684429217}
   colors:
   - serializedVersion: 2
-    rgba: 4291337983
+    rgba: 4286729727
   - serializedVersion: 2
-    rgba: 4294827911
+    rgba: 4294946604
   - serializedVersion: 2
     rgba: 4288937866
   - serializedVersion: 2

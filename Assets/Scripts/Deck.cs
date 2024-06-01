@@ -63,6 +63,16 @@ public class Deck : MonoBehaviour {
             }
         }
     }
+
+    public DeckFaction GetDeckFaction(FactionType factionType) {
+        foreach (DeckFaction item in factions) {
+            if(item.FactionType == factionType) {
+                return item;
+            }
+        }
+
+        return null;
+    }
 }
 
 [System.Serializable]
@@ -70,4 +80,6 @@ public class DeckFaction {
     public FactionType FactionType;
     public int slotCount;
     public int count = 1;
+
+    public bool isEmpty => count <= 0;
 }

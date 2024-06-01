@@ -11,7 +11,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
     
     int playerListIndex = 0;
     Player player;
-
+        
 
     [Header("Assignables")]
 

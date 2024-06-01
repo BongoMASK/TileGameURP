@@ -2,7 +2,7 @@ using DG.Tweening;
 using Photon.Realtime;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class BackgroundUI : MonoBehaviour
 {
 
     [SerializeField] RectTransform background;
