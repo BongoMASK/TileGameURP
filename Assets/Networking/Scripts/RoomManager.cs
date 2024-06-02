@@ -11,8 +11,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     [SerializeField] Color32[] teamColors;
 
-    [SerializeField] Button cancelButton;
-
 
     public override void OnEnable() {
         base.OnEnable();
@@ -22,8 +20,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         messageText.text = "Finding Game...";
         playerListText.text = "";
-
-        cancelButton.interactable = false;
 
         Invoke(nameof(ConnectToMaster), 2);
     }
@@ -54,8 +50,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         messageText.text = "Connected To Master";
         PhotonNetwork.JoinLobby();
-
-        cancelButton.interactable = true;
     }
 
     public override void OnJoinedLobby() {
@@ -78,6 +72,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
 
         Debug.Log(cause);
+        messageText.text = cause.ToString();
+
+        Invoke(nameof(BackToMainMenu), 2);
     }
 
 
@@ -116,6 +113,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void DoTransitionAnim() {
         MenuManager.instance.DoTransitionAnimIn();
+    }
+
+    public void BackToMainMenu() {
+        MenuManager.instance.OpenMenu("main");
     }
 
 

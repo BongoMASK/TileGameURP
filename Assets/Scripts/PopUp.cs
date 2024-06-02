@@ -9,7 +9,7 @@ public class PopUp : MonoBehaviour
 
     Vector2 pos = new Vector2(0, -1080);
 
-    float duration = 0.4f;
+    float duration = 0.7f;
 
     private void Start() {
         rectTransform.anchoredPosition = pos;
@@ -17,13 +17,14 @@ public class PopUp : MonoBehaviour
 
     public void EnterPopUp() {
         overlay.enabled = true;
-        overlay.DOFade(0.6f, duration).SetEase(Ease.OutSine);
-        rectTransform.DOAnchorPos(Vector2.zero, duration).SetEase(Ease.OutSine);
+        overlay.DOFade(0.6f, duration).SetEase(Ease.InOutSine);
+        rectTransform.DOAnchorPos(Vector2.zero, duration).SetEase(Ease.InOutSine);
     }
 
     public void ExitPopUp() {
-        overlay.DOFade(0, duration).SetEase(Ease.OutSine);
-        rectTransform.DOAnchorPos(pos, duration).SetEase(Ease.OutSine);
-        overlay.enabled = false;
+        overlay.DOFade(0, duration).SetEase(Ease.InOutSine);
+        rectTransform.DOAnchorPos(pos, duration).SetEase(Ease.InOutSine).
+            OnComplete(() => overlay.enabled = false);
+        
     }
 }

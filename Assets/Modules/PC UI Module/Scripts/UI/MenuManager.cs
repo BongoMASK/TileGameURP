@@ -13,6 +13,8 @@ public class MenuManager : MonoBehaviour {
 
     private float time = 0.4f;
 
+    public Menu activeMenu { get; private set; }
+
     private void Awake() {
         instance = this;
     }
@@ -29,14 +31,15 @@ public class MenuManager : MonoBehaviour {
     /// </summary>
     /// <param name="menuName"></param>
     public void OpenMenu(string menuName) {
+        Menu menu = null;
         for (int i = 0; i < menus.Length; i++) {
             if (menus[i].menuName == menuName) {
-                menus[i].Open();
-            }
-            else if (menus[i].open) {
-                CloseMenu(menus[i]);
+                menu = menus[i];
+                break;
             }
         }
+
+        OpenMenu(menu);
     }
 
     /// <summary>
@@ -44,6 +47,9 @@ public class MenuManager : MonoBehaviour {
     /// </summary>
     /// <param name="menu"></param>
     public void OpenMenu(Menu menu) {
+        if (menu == null || menu == activeMenu)
+            return;
+
         StartCoroutine(OpenAMenu(menu)); 
     }
 
@@ -58,6 +64,7 @@ public class MenuManager : MonoBehaviour {
             }
         }
         menu.Open();
+        activeMenu = menu;
 
         DoTransitionAnimOut();
     }
