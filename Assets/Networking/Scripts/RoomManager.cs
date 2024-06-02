@@ -2,7 +2,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -15,11 +14,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public override void OnEnable() {
         base.OnEnable();
 
-        if (PhotonNetwork.IsConnected)
-            Disconnect();
-
         messageText.text = "Finding Game...";
         playerListText.text = "";
+
+        if (PhotonNetwork.IsConnected) {
+            Disconnect();
+            return;
+        }
 
         Invoke(nameof(ConnectToMaster), 2);
     }
@@ -91,7 +92,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         foreach (Player item in PhotonNetwork.PlayerList) {
             string col = "<color=#" + ColorUtility.ToHtmlStringRGBA(teamColors[i]) + ">";
 
-            playerList += col + item.NickName;
+            playerList += item.NickName;
             playerList += "\n";
 
             SetPlayerCustomProps(item, i);

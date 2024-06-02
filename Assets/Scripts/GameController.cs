@@ -1,4 +1,3 @@
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Events;
@@ -73,7 +72,7 @@ public class GameController : MonoBehaviour, INetworkedTurnManagerCallbacks
 
     public void OnTurnTimeEnds(int turn) {
         Debug.Log("Times up! Turn " + turn);
-        Debug.Log("deck " + PhotonNetwork.LocalPlayer.IsDeckEmpty());
+
         Ev_OnTurnTimeEnds?.Invoke(turn);
     }
 }

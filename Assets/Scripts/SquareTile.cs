@@ -86,6 +86,7 @@ public class SquareTile : MonoBehaviour
 
     #endregion
 
+
     public SquareTile TraverseTiles(Border border) {
         // If it is not empty, then this is the tile you want
         if (!isEmpty)
