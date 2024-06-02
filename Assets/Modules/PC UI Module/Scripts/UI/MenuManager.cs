@@ -6,10 +6,16 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour {
 
+    public static MenuManager instance;
+
     public Menu[] menus;
     [SerializeField] Image transitionUI;
 
     private float time = 0.4f;
+
+    private void Awake() {
+        instance = this;
+    }
 
     private void Start() {
         transitionUI.gameObject.SetActive(true);

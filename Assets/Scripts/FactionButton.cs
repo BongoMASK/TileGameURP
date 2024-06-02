@@ -27,7 +27,6 @@ public class FactionButton : MonoBehaviour
 
     private void OnEnable() {
         GameController.instance.Ev_OnPieceCreated.AddListener(SetUpButton);
-        Debug.Log("kyaaaaaaaaaaaaaaaaaaaaaaaa");
     }
 
     private void OnDisable() {
@@ -39,7 +38,6 @@ public class FactionButton : MonoBehaviour
 
         if (deckFaction.isEmpty) {
             button.interactable = false;
-            GameController.instance.Ev_OnPieceCreated.RemoveListener(SetUpButton);
         }
     }
 

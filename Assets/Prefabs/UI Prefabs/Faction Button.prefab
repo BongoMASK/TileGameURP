@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1180933440430349720}
   - component: {fileID: 2734602823595589786}
   - component: {fileID: 4012042089601418940}
+  - component: {fileID: 7768692243783743977}
   m_Layer: 5
   m_Name: Faction Button
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7768692243783743977}
+        m_TargetAssemblyTypeName: DoAnimation, Assembly-CSharp
+        m_MethodName: PlayAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1180933440430349720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +200,21 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &7768692243783743977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3991949135951694001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1342d81d767a3f24c973ad34861f4fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationType: 2
+  endValue: {x: 0.95, y: 0.95, z: 0.95}
+  duration: 0.4
 --- !u!1 &4112280262329322128
 GameObject:
   m_ObjectHideFlags: 0

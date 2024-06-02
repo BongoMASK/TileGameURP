@@ -2,14 +2,31 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text messageText;
     [SerializeField] TMP_Text playerListText;
-    [SerializeField] TMP_InputField inputFieldText;
 
     [SerializeField] Color32[] teamColors;
+
+    [SerializeField] Button cancelButton;
+
+
+    public override void OnEnable() {
+        base.OnEnable();
+
+        if (PhotonNetwork.IsConnected)
+            Disconnect();
+
+        messageText.text = "Finding Game...";
+        playerListText.text = "";
+
+        cancelButton.interactable = false;
+
+        Invoke(nameof(ConnectToMaster), 2);
+    }
 
     private void Start() {
         Screen.SetResolution(1280, 720, false);
@@ -26,7 +43,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
         messageText.text = "Connecting...";
         PhotonNetwork.ConnectUsingSettings();
 
-        PhotonNetwork.NickName = inputFieldText.text;
+        //PhotonNetwork.NickName = inputFieldText.text;
+        string randPlayerName = "Player #" + Random.Range(0, 1000).ToString();
+        PhotonNetwork.NickName = PlayerPrefs.GetString("playerName", randPlayerName);
+        PlayerPrefs.SetString("playerName", PhotonNetwork.NickName);
     }
 
     public override void OnConnectedToMaster() {
@@ -34,13 +54,15 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         messageText.text = "Connected To Master";
         PhotonNetwork.JoinLobby();
+
+        cancelButton.interactable = true;
     }
 
     public override void OnJoinedLobby() {
         base.OnJoinedLobby();
 
         PhotonNetwork.JoinOrCreateRoom("test", null, null);
-        messageText.text = "We're connected in a room now";
+        messageText.text = "Lobby Created";
     }
 
     public override void OnJoinedRoom() {
@@ -52,7 +74,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         //GameObject player = PhotonNetwork.Instantiate(playerPath, Vector3.zero, Quaternion.identity);
     }
 
-    
+    public override void OnDisconnected(DisconnectCause cause) {
+        base.OnDisconnected(cause);
+
+        Debug.Log(cause);
+    }
+
+
 
     public void StartGame() {
         PhotonNetwork.LoadLevel(1);
@@ -77,9 +105,17 @@ public class RoomManager : MonoBehaviourPunCallbacks
         playerListText.text = playerList;
     }
 
+    public void Disconnect() {
+        PhotonNetwork.Disconnect();
+    }
+
     private void SetPlayerCustomProps(Player player, int i) {
         player.SetTeam(i);
         player.SetIsEmptyDeck(false);
+    }
+
+    public void DoTransitionAnim() {
+        MenuManager.instance.DoTransitionAnimIn();
     }
 
 
@@ -95,7 +131,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2) {
             messageText.text = "Starting Game...";
-            Invoke(nameof(StartGame), 1);
+            Invoke(nameof(DoTransitionAnim), 2);
+            Invoke(nameof(StartGame), 5);
         }
     }
 

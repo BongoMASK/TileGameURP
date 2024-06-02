@@ -231,6 +231,11 @@ public class NetworkedTurnManager : MonoBehaviourPunCallbacks, IOnEventCallback 
     }
 
     
+    public void Disconnect () {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene(0);
+    }
+
     #region Callbacks
 
     // called internally
