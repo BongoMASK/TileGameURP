@@ -102,4 +102,8 @@ public class MenuManager : MonoBehaviour {
         foreach (Menu menu in menus)
             CloseMenu(menu);
     }
+
+    public void Quit() {
+        Application.Quit();
+    }
 }

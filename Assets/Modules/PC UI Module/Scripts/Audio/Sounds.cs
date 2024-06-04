@@ -10,7 +10,7 @@ public class Sounds {
     public List<AudioClip> clips = new List<AudioClip>();
 
     [Range(0, 3f)]
-    public float volume = 0.5f;
+    public float volume = 1f;
 
     [Range(0.1f, 3f)]
     public float pitch = 1f;
@@ -20,9 +20,9 @@ public class Sounds {
     public bool randomizePitch;
 
     [Range(0.1f, 3f)]
-    public float pitchMin = 0;
+    public float pitchMin = 0.85f;
     [Range(0.1f, 3f)]
-    public float pitchMax = 3;
+    public float pitchMax = 1.15f;
 
     [HideInInspector]
     public AudioSource source;
@@ -31,7 +31,8 @@ public class Sounds {
 public enum SoundType {
     Effects = 0,
     Music,
-    Voice
+    UI,
+    Voice,
 }
 
 public class SoundNames {

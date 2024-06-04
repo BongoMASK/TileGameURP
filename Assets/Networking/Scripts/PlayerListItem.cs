@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 using Properties;
@@ -26,6 +27,8 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
     float turnDuration = 20;
 
     [SerializeField] Color32[] colors;
+
+    [SerializeField] RectTransform rectTransform;
 
     public float ElapsedTimeInTurn {
         get { return ((float)(PhotonNetwork.ServerTimestamp - PhotonNetwork.CurrentRoom.GetTurnStartTime())) / 1000.0f; }
@@ -77,6 +80,9 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
     }
 
     IEnumerator Cor_SetupTime() {
+        Vector2 sizeDelta = rectTransform.sizeDelta;
+        rectTransform.DOSizeDelta(new Vector2(sizeDelta.x, 65), 0.5f).SetEase(Ease.InOutSine);
+
         while (PhotonNetwork.CurrentRoom.GetActivePlayer() == player) {
             timeText.text = ((int)RemainingSecondsInTurn).ToString();
             slider.value = RemainingSecondsInTurn;
@@ -87,6 +93,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks {
         // Set back to default after it is over
         timeText.text = "";
         slider.value = 0;
+        rectTransform.DOSizeDelta(sizeDelta, 0.5f).SetEase(Ease.InOutSine);
     }
 
     #region PUN CallBack Functions 

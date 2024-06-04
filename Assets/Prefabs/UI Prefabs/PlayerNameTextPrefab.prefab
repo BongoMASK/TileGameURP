@@ -484,6 +484,7 @@ MonoBehaviour:
     rgba: 4288937866
   - serializedVersion: 2
     rgba: 4287293695
+  rectTransform: {fileID: 7533904911989456869}
 --- !u!1 &7844808264052931856
 GameObject:
   m_ObjectHideFlags: 0

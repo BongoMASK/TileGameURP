@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -26,14 +27,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
 
     private void Start() {
-        Screen.SetResolution(1280, 720, false);
-
-        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.AutomaticallySyncScene = true; 
     }
 
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            StartGame();
+        if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.Space))
+                StartGame();
     }
 
     public void ConnectToMaster() {
@@ -76,6 +76,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         messageText.text = cause.ToString();
 
         Invoke(nameof(BackToMainMenu), 2);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList) {
+
+        for (int i = 0; i < roomList.Count; i++) {
+            Debug.Log(roomList[i].Name);
+        }
     }
 
 
